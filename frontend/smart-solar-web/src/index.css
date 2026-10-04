@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Global button hover contract — Backoffice + Grid Operator
+   Requirement: on hover every button text -> #063127, background -> #F8F8F8.
+   Uses plain Bootstrap 5 CSS (loaded after Bootstrap, after Tailwind
+   utilities) so it beats both Bootstrap's var-based `.btn:hover` and any
+   leftover `hover:text-white` / `hover:text-[#F8F8F8]` utilities.
+   ========================================================================== */
+.btn:hover,
+button.btn:hover,
+a.btn:hover,
+.btn-check + .btn:hover {
+  color: #063127 !important;
+  background-color: #F8F8F8 !important;
+  border-color: #063127 !important;
+  --bs-btn-hover-color: #063127 !important;
+  --bs-btn-hover-bg: #F8F8F8 !important;
+  --bs-btn-hover-border-color: #063127 !important;
+  --bs-btn-active-color: #063127 !important;
+  --bs-btn-active-bg: #F8F8F8 !important;
+  --bs-btn-active-border-color: #063127 !important;
+}
+
+/* Child text/icons inherit the hover color (e.g. <span>, <i class="bi">). */
+.btn:hover *,
+button.btn:hover *,
+a.btn:hover * {
+  color: #063127 !important;
+}
+
+/* btn-link variant: same contract, keeps underline but swaps colors. */
+.btn-link:hover {
+  color: #063127 !important;
+  background-color: #F8F8F8 !important;
+}
+
+/* btn-close (X) variant: light tile with dark X on hover. */
+.btn-close:hover {
+  background-color: #F8F8F8 !important;
+  border: 1px solid #063127 !important;
+  opacity: 1 !important;
+}
+
+/* ==========================================================================
+   Global modal overlay contract — Backoffice + Grid Operator forms
+   Bug: form modals rendered with plain `.modal.d-block` (static position)
+   inside pages wrapped in `overflow-hidden`, combined with
+   `.modal-dialog-centered`. Tall forms (e.g. Register New Prosumer) were
+   vertically centered and clipped — only the top half displayed with no way
+   to scroll to phone / address / submit.
+   Fix (Bootstrap 5 + Tailwind compatible): force every `.modal.d-block`
+   overlay to a fixed full-viewport scroll container, and neutralize the
+   centering so the dialog starts at the top with vertical margins and the
+   page behind never traps the scroll.
+   ========================================================================== */
+.modal.d-block {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  z-index: 1050 !important;
+}
+
+.modal.d-block .modal-dialog {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* `modal-dialog-centered` + tall content is a known Bootstrap clipping trap:
+   the flex centering pushes the top of the dialog above the viewport. Force
+   top alignment with breathing room instead. */
+.modal.d-block .modal-dialog.modal-dialog-centered {
+  align-items: flex-start !important;
+  min-height: 0 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Scrollable dialogs may never exceed the viewport height. On small laptop
+   screens the full form must fit in a short dialog with its own scrollbar
+   instead of stretching the page. */
+.modal.d-block .modal-content,
+.modal.d-block .modal-dialog-scrollable .modal-content {
+  max-height: min(700px, calc(100dvh - 4rem)) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+/* Keep the title row pinned while the fields scroll underneath. */
+.modal.d-block .modal-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 3;
+}
+
+/* Keep the primary submit button pinned at the bottom of the scroll area. */
+.modal.d-block .modal-content > form > button[type='submit']:last-child {
+  position: sticky !important;
+  bottom: 0;
+  z-index: 3;
+}
+
+/* ==========================================================================
+   Shared entrance-motion keyframes (driven by Bootstrap 5 / Tailwind CSS
+   `animate-[...]` utilities + `motion-reduce:animate-none` on the markup).
+   ========================================================================== */
+@keyframes bl-fade-up {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes bl-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes bl-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
